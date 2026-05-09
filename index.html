@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>University Attendance App</title>
+  <style>
+    :root{
+      --bg1:#0f172a;
+      --bg2:#111827;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --primary:#2563eb;
+      --primary2:#7c3aed;
+      --success:#16a34a;
+      --danger:#dc2626;
+      --warning:#f59e0b;
+      --border:#e2e8f0;
+      --shadow:0 18px 40px rgba(0,0,0,.18);
+      --radius:24px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Arial, Helvetica, sans-serif;
+      background:radial-gradient(circle at top, #334155, var(--bg1) 55%, #020617);
+      color:#fff;
+      padding:24px;
+    }
+
+    .app{
+      width:min(1200px,100%);
+      margin:0 auto;
+    }
+
+    .header{
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      color:#fff;
+      border-radius:28px;
+      padding:26px 28px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+
+    .header h1{
+      margin:0 0 8px;
+      font-size:2rem;
+    }
+
+    .header p{
+      margin:0;
+      opacity:.95;
+      line-height:1.6;
+    }
+
+    .panel, .card, .modal-content, .auth-box{
+      background:rgba(255,255,255,.97);
+      color:var(--text);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,.25);
+    }
+
+    .auth-wrap{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:20px;
+    }
+
+    .auth-box{
+      padding:24px;
+    }
+
+    .auth-box h2{
+      margin:0 0 10px;
+      font-size:1.4rem;
+    }
+
+    .auth-box p{
+      margin:0 0 18px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .tabs{
+      display:flex;
+      gap:10px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+
+    .tab-btn{
+      border:none;
+      padding:10px 14px;
+      border-radius:999px;
+      background:#e2e8f0;
+      color:#0f172a;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .tab-btn.active{
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      color:#fff;
+    }
+
+    form{
+      display:grid;
+      gap:14px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:6px;
+      font-size:14px;
+      font-weight:700;
+      color:#374151;
+    }
+
+    input, select, textarea{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      outline:none;
+      font-size:14px;
+      background:#fff;
+    }
+
+    textarea{
+      min-height:100px;
+      resize:vertical;
+    }
+
+    button{
+      border:none;
+      cursor:pointer;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:700;
+      font-size:14px;
+      transition:.2s ease;
+    }
+
+    button:hover{transform:translateY(-1px)}
+    .primary-btn{
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      color:#fff;
+    }
+    .secondary-btn{
+      background:#e2e8f0;
+      color:#0f172a;
+    }
+    .success-btn{
+      background:#dcfce7;
+      color:#166534;
+    }
+    .danger-btn{
+      background:#fee2e2;
+      color:#b91c1c;
+    }
+    .warning-btn{
+      background:#fef3c7;
+      color:#b45309;
+    }
+
+    .note{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.5;
+      margin-top:10px;
+    }
+
+    .hidden{display:none !important;}
+
+    .toast{
+      position:fixed;
+      top:20px;
+      right:20px;
+      z-index:2000;
+      background:#111827;
+      color:#fff;
+      padding:14px 16px;
+      border-radius:14px;
+      box-shadow:var(--shadow);
+      max-width:340px;
+      display:none;
+      line-height:1.5;
+    }
+
+    .toast.show{display:block;}
+    .toast.success{background:#166534;}
+    .toast.error{background:#991b1b;}
+    .toast.info{background:#1d4ed8;}
+
+    .dashboard{
+      display:none;
+      gap:18px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      background:rgba(255,255,255,.96);
+      color:var(--text);
+      border-radius:24px;
+      padding:18px 20px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+
+    .topbar strong{
+      font-size:1.05rem;
+    }
+
+    .role-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#eff6ff;
+      color:#1d4ed8;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .dash-grid{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:18px;
+    }
+
+    .card{
+      padding:22px;
+    }
+
+    .card h3{
+      margin:0 0 10px;
+      font-size:1.2rem;
+    }
+
+    .card p{
+      margin:0 0 14px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .section-title{
+      margin:0 0 14px;
+      font-size:1.1rem;
+    }
+
+    .list{
+      display:grid;
+      gap:14px;
+    }
+
+    .course-card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 8px 18px rgba(15,23,42,.05);
+    }
+
+    .course-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+
+    .course-title{
+      margin:0;
+      font-size:1.05rem;
+      font-weight:800;
+      color:#111827;
+    }
+
+    .course-code{
+      display:inline-block;
+      margin-top:6px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#e0f2fe;
+      color:#0369a1;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .course-meta{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .course-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .stat{
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .stat h4{
+      margin:0 0 8px;
+      color:var(--muted);
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.3px;
+    }
+
+    .stat .value{
+      font-size:1.4rem;
+      font-weight:800;
+      color:#111827;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      overflow:hidden;
+      border-radius:16px;
+      background:#fff;
+    }
+
+    th, td{
+      text-align:left;
+      padding:12px 10px;
+      border-bottom:1px solid var(--border);
+      font-size:14px;
+      vertical-align:top;
+    }
+
+    th{
+      background:#f8fafc;
+      color:#374151;
+    }
+
+    .status-present{color:#166534;font-weight:700;}
+    .status-absent{color:#b91c1c;font-weight:700;}
+    .status-none{color:#b45309;font-weight:700;}
+
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.68);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:1500;
+    }
+
+    .modal.show{display:flex;}
+
+    .modal-content{
+      width:min(720px,100%);
+      padding:24px;
+      max-height:90vh;
+      overflow:auto;
+    }
+
+    .modal-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    .modal-header h3{
+      margin:0;
+      font-size:1.25rem;
+    }
+
+    .close-btn{
+      background:#e2e8f0;
+      color:#0f172a;
+      padding:10px 14px;
+      border-radius:12px;
+    }
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .mini-grid .full{grid-column:1/-1;}
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .pill-green{background:#dcfce7;color:#166534;}
+    .pill-blue{background:#dbeafe;color:#1d4ed8;}
+    .pill-amber{background:#fef3c7;color:#b45309;}
+
+    .empty{
+      text-align:center;
+      color:var(--muted);
+      padding:24px 10px;
+      line-height:1.6;
+      border:1px dashed #cbd5e1;
+      border-radius:18px;
+      background:#fff;
+    }
+
+    @media (max-width: 960px){
+      .auth-wrap, .dash-grid{grid-template-columns:1fr;}
+    }
+
+    @media (max-width: 620px){
+      body{padding:14px;}
+      .header h1{font-size:1.6rem;}
+      .mini-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+
+  <div class="app">
+    <section class="header">
+      <h1>University Attendance App</h1>
+    </section>
+
+    <!-- AUTH AREA -->
+    <section id="authArea" class="auth-wrap">
+      <div class="auth-box">
+        <h2>Welcome</h2>
+        <p>Use the demo credentials below or create a new account. Students and instructors see different dashboards.</p>
+
+        <div class="tabs">
+          <button class="tab-btn active" id="loginTabBtn" onclick="switchAuthTab('login')">Login</button>
+          <button class="tab-btn" id="registerTabBtn" onclick="switchAuthTab('register')">Register</button>
+        </div>
+
+        <div id="loginFormWrap">
+          <form id="loginForm">
+            <div>
+              <label for="loginEmail">Email</label>
+              <input type="email" id="loginEmail" placeholder="student@uni.com" required />
+            </div>
+
+            <div>
+              <label for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" placeholder="Password" required />
+            </div>
+
+            <button class="primary-btn" type="submit">Login</button>
+          </form>
+        </div>
+
+        <div id="registerFormWrap" class="hidden">
+          <form id="registerForm">
+            <div class="mini-grid">
+              <div>
+                <label for="regName">Full Name</label>
+                <input type="text" id="regName" placeholder="Your name" required />
+              </div>
+
+              <div>
+                <label for="regRole">Role</label>
+                <select id="regRole" required>
+                  <option value="student">Student</option>
+                  <option value="instructor">Instructor</option>
+                </select>
+              </div>
+
+              <div class="full">
+                <label for="regEmail">Email</label>
+                <input type="email" id="regEmail" placeholder="name@uni.com" required />
+              </div>
+
+              <div class="full">
+                <label for="regPassword">Password</label>
+                <input type="password" id="regPassword" placeholder="Create a password" required />
+              </div>
+            </div>
+
+            <button class="primary-btn" type="submit">Create Account</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="auth-box">
+        <h2>Demo Accounts</h2>
+        <p>These sample accounts help you test the app quickly.</p>
+
+        <div class="course-card" style="margin-bottom:12px;">
+          <div class="course-top">
+            <div>
+              <h4 class="course-title" style="margin:0;">Instructor Demo</h4>
+              <div class="course-code">prof@uni.com</div>
+            </div>
+            <span class="pill pill-blue">Instructor</span>
+          </div>
+          <div class="course-meta">
+            Password: <strong>Pass@123</strong><br />
+            Can create courses and manage student rosters.
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-top">
+            <div>
+              <h4 class="course-title" style="margin:0;">Student Demo</h4>
+              <div class="course-code">student@uni.com</div>
+            </div>
+            <span class="pill pill-green">Student</span>
+          </div>
+          <div class="course-meta">
+            Password: <strong>Pass@123</strong><br />
+            Can join courses and mark attendance.
+          </div>
+        </div>
+
+        <div class="note">
+          Local storage is used for this demo project. For a real deployment, connect Firebase or SQLite with proper server-side security.
+        </div>
+      </div>
+    </section>
+
+    <!-- DASHBOARDS -->
+    <section id="dashboardArea" class="dashboard">
+      <div class="topbar">
+        <div>
+          <strong id="welcomeText">Welcome</strong><br />
+          <span class="note" id="sessionText">Signed in</span>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <span class="role-pill" id="rolePill">Role</span>
+          <button class="secondary-btn" onclick="logout()">Logout</button>
+        </div>
+      </div>
+
+      <!-- STUDENT VIEW -->
+      <div id="studentView" class="dash-grid hidden">
+        <div class="card">
+          <h3>My Courses</h3>
+          <p>Join a course using the course code and mark attendance for today.</p>
+
+          <form id="joinCourseForm">
+            <div class="mini-grid">
+              <div class="full">
+                <label for="joinCourseCode">Course Code</label>
+                <input type="text" id="joinCourseCode" placeholder="e.g. CSE101" required />
+              </div>
+            </div>
+            <button class="primary-btn" type="submit">Join Course</button>
+          </form>
+
+          <div style="height:16px;"></div>
+
+          <div class="stats">
+            <div class="stat">
+              <h4>Enrolled</h4>
+              <div class="value" id="studentCourseCount">0</div>
+            </div>
+            <div class="stat">
+              <h4>Today Present</h4>
+              <div class="value" id="studentTodayCount">0</div>
+            </div>
+            <div class="stat">
+              <h4>Marked</h4>
+              <div class="value" id="studentMarkedCount">0</div>
+            </div>
+          </div>
+
+          <div id="studentCourseList" class="list"></div>
+        </div>
+
+        <div class="card">
+          <h3>Attendance Summary</h3>
+          <p>View today's attendance records across your enrolled courses.</p>
+          <div id="studentSummary"></div>
+        </div>
+      </div>
+
+      <!-- INSTRUCTOR VIEW -->
+      <div id="instructorView" class="dash-grid hidden">
+        <div class="card">
+          <h3>Manage Courses</h3>
+          <p>Create new courses and assign students to each course.</p>
+
+          <form id="createCourseForm">
+            <div class="mini-grid">
+              <div>
+                <label for="courseCode">Course Code</label>
+                <input type="text" id="courseCode" placeholder="CSE101" required />
+              </div>
+              <div>
+                <label for="courseName">Course Name</label>
+                <input type="text" id="courseName" placeholder="Data Structures" required />
+              </div>
+              <div class="full">
+                <label for="courseDesc">Course Description</label>
+                <textarea id="courseDesc" placeholder="Brief course details"></textarea>
+              </div>
+            </div>
+            <button class="primary-btn" type="submit">Create Course</button>
+          </form>
+
+          <div style="height:16px;"></div>
+
+          <div class="stats">
+            <div class="stat">
+              <h4>Total Courses</h4>
+              <div class="value" id="courseCount">0</div>
+            </div>
+            <div class="stat">
+              <h4>Total Students</h4>
+              <div class="value" id="totalStudentsCount">0</div>
+            </div>
+            <div class="stat">
+              <h4>Today's Records</h4>
+              <div class="value" id="todayRecordsCount">0</div>
+            </div>
+          </div>
+
+          <div id="instructorCourseList" class="list"></div>
+        </div>
+
+        <div class="card">
+          <h3>Student Lookup</h3>
+          <p>Search registered students and review basic attendance details.</p>
+
+          <div style="margin-bottom:12px;">
+            <label for="studentSearch">Search by Name or Email</label>
+            <input type="text" id="studentSearch" placeholder="Type to search..." oninput="renderInstructorSide()" />
+          </div>
+
+          <div id="studentSearchResults"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ROSTER MODAL -->
+  <div class="modal" id="rosterModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="rosterTitle">Manage Roster</h3>
+        <button class="close-btn" onclick="closeRosterModal()">Close</button>
+      </div>
+
+      <div class="note" id="rosterCourseInfo"></div>
+
+      <form id="addStudentForm" style="margin-top:14px;">
+        <div class="mini-grid">
+          <div class="full">
+            <label for="studentEmailInput">Add Student by Email</label>
+            <input type="email" id="studentEmailInput" placeholder="student@uni.com" required />
+          </div>
+        </div>
+        <button class="primary-btn" type="submit">Add Student</button>
+      </form>
+
+      <div style="height:18px;"></div>
+      <h4 style="margin:0 0 10px;">Enrolled Students</h4>
+      <div id="rosterList" class="list"></div>
+    </div>
+  </div>
+
+  <script>
+    const USERS_KEY = "uni_attendance_users_v1";
+    const COURSES_KEY = "uni_attendance_courses_v1";
+    const SESSION_KEY = "uni_attendance_session_v1";
+
+    let users = loadUsers();
+    let courses = loadCourses();
+    let sessionUser = loadSession();
+    let activeRosterCourseId = null;
+
+    const toastEl = document.getElementById("toast");
+
+    const authArea = document.getElementById("authArea");
+    const dashboardArea = document.getElementById("dashboardArea");
+    const studentView = document.getElementById("studentView");
+    const instructorView = document.getElementById("instructorView");
+    const welcomeText = document.getElementById("welcomeText");
+    const sessionText = document.getElementById("sessionText");
+    const rolePill = document.getElementById("rolePill");
+
+    const loginTabBtn = document.getElementById("loginTabBtn");
+    const registerTabBtn = document.getElementById("registerTabBtn");
+    const loginFormWrap = document.getElementById("loginFormWrap");
+    const registerFormWrap = document.getElementById("registerFormWrap");
+
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const joinCourseForm = document.getElementById("joinCourseForm");
+    const createCourseForm = document.getElementById("createCourseForm");
+
+    const studentCourseList = document.getElementById("studentCourseList");
+    const studentSummary = document.getElementById("studentSummary");
+    const studentCourseCount = document.getElementById("studentCourseCount");
+    const studentTodayCount = document.getElementById("studentTodayCount");
+    const studentMarkedCount = document.getElementById("studentMarkedCount");
+
+    const instructorCourseList = document.getElementById("instructorCourseList");
+    const courseCount = document.getElementById("courseCount");
+    const totalStudentsCount = document.getElementById("totalStudentsCount");
+    const todayRecordsCount = document.getElementById("todayRecordsCount");
+    const studentSearchResults = document.getElementById("studentSearchResults");
+
+    const rosterModal = document.getElementById("rosterModal");
+    const rosterTitle = document.getElementById("rosterTitle");
+    const rosterCourseInfo = document.getElementById("rosterCourseInfo");
+    const rosterList = document.getElementById("rosterList");
+    const addStudentForm = document.getElementById("addStudentForm");
+    const studentEmailInput = document.getElementById("studentEmailInput");
+
+    const todayKey = getTodayKey();
+
+    function showToast(message, type = "info") {
+      toastEl.textContent = message;
+      toastEl.className = `toast show ${type}`;
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        toastEl.className = "toast";
+      }, 2600);
+    }
+
+    function loadUsers() {
+      const stored = localStorage.getItem(USERS_KEY);
+      if (stored) return JSON.parse(stored);
+
+      const defaults = [
+        {
+          id: crypto.randomUUID(),
+          name: "Dr. Smith",
+          email: "prof@uni.com",
+          role: "instructor",
+          passwordHash: ""
+        },
+        {
+          id: crypto.randomUUID(),
+          name: "Rahul Student",
+          email: "student@uni.com",
+          role: "student",
+          passwordHash: ""
+        }
+      ];
+
+      return defaults;
+    }
+
+    function loadCourses() {
+      const stored = localStorage.getItem(COURSES_KEY);
+      if (stored) return JSON.parse(stored);
+
+      return [];
+    }
+
+    function loadSession() {
+      const stored = localStorage.getItem(SESSION_KEY);
+      return stored ? JSON.parse(stored) : null;
+    }
+
+    function saveUsers() {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function saveCourses() {
+      localStorage.setItem(COURSES_KEY, JSON.stringify(courses));
+    }
+
+    function saveSession() {
+      if (sessionUser) localStorage.setItem(SESSION_KEY, JSON.stringify(sessionUser));
+      else localStorage.removeItem(SESSION_KEY);
+    }
+
+    function getTodayKey() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    async function hashPassword(password) {
+      const bytes = new TextEncoder().encode(password);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(digest))
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+    }
+
+    function switchAuthTab(tab) {
+      const isLogin = tab === "login";
+      loginTabBtn.classList.toggle("active", isLogin);
+      registerTabBtn.classList.toggle("active", !isLogin);
+      loginFormWrap.classList.toggle("hidden", !isLogin);
+      registerFormWrap.classList.toggle("hidden", isLogin);
+    }
+
+    function setSession(user) {
+      sessionUser = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      };
+      saveSession();
+      renderApp();
+    }
+
+    function logout() {
+      sessionUser = null;
+      saveSession();
+      renderApp();
+      showToast("Logged out successfully.", "info");
+    }
+
+    function normalizeEmail(email) {
+      return String(email || "").trim().toLowerCase();
+    }
+
+    function courseById(id) {
+      return courses.find(c => c.id === id);
+    }
+
+    function userByEmail(email) {
+      return users.find(u => normalizeEmail(u.email) === normalizeEmail(email));
+    }
+
+    function getStudentCourses(email) {
+      return courses.filter(c => (c.enrolledStudents || []).includes(normalizeEmail(email)));
+    }
+
+    function getCourseAttendance(course, dateKey = todayKey) {
+      return course.attendanceRecords?.[dateKey] || {};
+    }
+
+    function renderApp() {
+      if (!sessionUser) {
+        authArea.classList.remove("hidden");
+        dashboardArea.style.display = "none";
+        return;
+      }
+
+      authArea.classList.add("hidden");
+      dashboardArea.style.display = "grid";
+
+      welcomeText.textContent = `Welcome, ${sessionUser.name}`;
+      sessionText.textContent = `${sessionUser.email}`;
+      rolePill.textContent = sessionUser.role === "instructor" ? "Instructor" : "Student";
+      rolePill.className = `role-pill ${sessionUser.role === "instructor" ? "pill-blue" : "pill-green"}`;
+
+      studentView.classList.toggle("hidden", sessionUser.role !== "student");
+      instructorView.classList.toggle("hidden", sessionUser.role !== "instructor");
+
+      if (sessionUser.role === "student") {
+        renderStudentSide();
+      } else {
+        renderInstructorSide();
+      }
+    }
+
+    function renderStudentSide() {
+      const enrolledCourses = getStudentCourses(sessionUser.email);
+      studentCourseCount.textContent = enrolledCourses.length;
+
+      let marked = 0;
+      let todayPresent = 0;
+      const cards = [];
+
+      enrolledCourses.forEach(course => {
+        const attendance = getCourseAttendance(course, todayKey);
+        const todayStatus = attendance[normalizeEmail(sessionUser.email)] || "Not Marked";
+        if (todayStatus !== "Not Marked") marked++;
+        if (todayStatus === "Present") todayPresent++;
+
+        const totalDates = Object.keys(course.attendanceRecords || {});
+        let presentDays = 0;
+        totalDates.forEach(date => {
+          const status = course.attendanceRecords[date]?.[normalizeEmail(sessionUser.email)];
+          if (status === "Present") presentDays++;
+        });
+
+        cards.push(`
+          <div class="course-card">
+            <div class="course-top">
+              <div>
+                <h4 class="course-title">${escapeHTML(course.name)}</h4>
+                <span class="course-code">${escapeHTML(course.code)}</span>
+              </div>
+              <span class="pill pill-blue">${escapeHTML(course.instructorName || "Instructor")}</span>
+            </div>
+
+            <div class="course-meta">
+              ${escapeHTML(course.description || "No description provided.")}<br />
+              <strong>Today:</strong> <span class="${
+                todayStatus === "Present" ? "status-present" :
+                todayStatus === "Absent" ? "status-absent" : "status-none"
+              }">${todayStatus}</span><br />
+              <strong>Attendance Days:</strong> ${presentDays} present / ${totalDates.length} recorded
+            </div>
+
+            <div class="course-actions">
+              <button class="success-btn" onclick="markAttendance('${course.id}')"
+                ${todayStatus === "Present" ? "disabled" : ""}>
+                ${todayStatus === "Present" ? "Marked Present" : "Mark Attendance"}
+              </button>
+            </div>
+          </div>
+        `);
+      });
+
+      studentTodayCount.textContent = todayPresent;
+      studentMarkedCount.textContent = marked;
+
+      studentCourseList.innerHTML = cards.length
+        ? cards.join("")
+        : `<div class="empty">No courses enrolled yet. Join a course using the course code above.</div>`;
+
+      if (enrolledCourses.length === 0) {
+        studentSummary.innerHTML = `<div class="empty">No attendance records yet. Join a course to begin tracking attendance.</div>`;
+      } else {
+        const rows = enrolledCourses.map(course => {
+          const attendance = getCourseAttendance(course, todayKey);
+          const todayStatus = attendance[normalizeEmail(sessionUser.email)] || "Not Marked";
+          return `
+            <tr>
+              <td>${escapeHTML(course.code)}</td>
+              <td>${escapeHTML(course.name)}</td>
+              <td class="${
+                todayStatus === "Present" ? "status-present" :
+                todayStatus === "Absent" ? "status-absent" : "status-none"
+              }">${todayStatus}</td>
+            </tr>
+          `;
+        }).join("");
+
+        studentSummary.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Course</th>
+                <th>Status Today</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+      }
+    }
+
+    function renderInstructorSide() {
+      courseCount.textContent = courses.length;
+      totalStudentsCount.textContent = users.filter(u => u.role === "student").length;
+      todayRecordsCount.textContent = courses.reduce((sum, c) => sum + Object.keys(c.attendanceRecords?.[todayKey] || {}).length, 0);
+
+      const instructorCourses = courses.filter(c => normalizeEmail(c.instructorEmail) === normalizeEmail(sessionUser.email));
+
+      instructorCourseList.innerHTML = instructorCourses.length
+        ? instructorCourses.map(course => {
+            const rosterCount = (course.enrolledStudents || []).length;
+            const todayRecordCount = Object.keys(course.attendanceRecords?.[todayKey] || {}).length;
+            return `
+              <div class="course-card">
+                <div class="course-top">
+                  <div>
+                    <h4 class="course-title">${escapeHTML(course.name)}</h4>
+                    <span class="course-code">${escapeHTML(course.code)}</span>
+                  </div>
+                  <span class="pill pill-amber">${rosterCount} Students</span>
+                </div>
+
+                <div class="course-meta">
+                  ${escapeHTML(course.description || "No description provided.")}<br />
+                  <strong>Today Records:</strong> ${todayRecordCount}<br />
+                  <strong>Instructor:</strong> ${escapeHTML(course.instructorName || sessionUser.name)}
+                </div>
+
+                <div class="course-actions">
+                  <button class="secondary-btn" onclick="openRosterModal('${course.id}')">Manage Roster</button>
+                  <button class="warning-btn" onclick="viewCourseRecords('${course.id}')">View Records</button>
+                  <button class="danger-btn" onclick="deleteCourse('${course.id}')">Delete Course</button>
+                </div>
+              </div>
+            `;
+          }).join("")
+        : `<div class="empty">No courses created yet. Create a course using the form above.</div>`;
+
+      const search = document.getElementById("studentSearch").value.trim().toLowerCase();
+      const students = users.filter(u => u.role === "student").filter(u =>
+        u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search)
+      );
+
+      studentSearchResults.innerHTML = students.length
+        ? students.map(student => {
+            const studentCourses = getStudentCourses(student.email);
+            const presentCount = studentCourses.reduce((sum, course) => {
+              const dates = Object.keys(course.attendanceRecords || {});
+              return sum + dates.reduce((count, date) => {
+                return count + (course.attendanceRecords[date]?.[normalizeEmail(student.email)] === "Present" ? 1 : 0);
+              }, 0);
+            }, 0);
+
+            return `
+              <div class="course-card">
+                <div class="course-top">
+                  <div>
+                    <h4 class="course-title">${escapeHTML(student.name)}</h4>
+                    <span class="course-code">${escapeHTML(student.email)}</span>
+                  </div>
+                  <span class="pill pill-green">${studentCourses.length} Courses</span>
+                </div>
+                <div class="course-meta">
+                  <strong>Role:</strong> ${student.role}<br />
+                  <strong>Recorded Present Marks:</strong> ${presentCount}
+                </div>
+              </div>
+            `;
+          }).join("")
+        : `<div class="empty">No matching students found.</div>`;
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = normalizeEmail(document.getElementById("loginEmail").value);
+      const password = document.getElementById("loginPassword").value;
+
+      if (!email || !password) {
+        showToast("Please enter email and password.", "error");
+        return;
+      }
+
+      const user = userByEmail(email);
+      if (!user) {
+        showToast("No account found for this email.", "error");
+        return;
+      }
+
+      if (!user.passwordHash) {
+        showToast("This demo account uses password Pass@123. Please set a password by registering a new account, or log in with the demo password after first use.", "info");
+      }
+
+      const hashed = await hashPassword(password);
+      if (user.passwordHash && user.passwordHash !== hashed) {
+        showToast("Invalid password.", "error");
+        return;
+      }
+
+      // For first-time demo users with blank hash, set hash on first successful login using Pass@123
+      if (!user.passwordHash && password === "Pass@123") {
+        user.passwordHash = hashed;
+        saveUsers();
+      }
+
+      setSession(user);
+      showToast("Login successful.", "success");
+      document.getElementById("loginForm").reset();
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById("regName").value.trim();
+      const email = normalizeEmail(document.getElementById("regEmail").value);
+      const password = document.getElementById("regPassword").value;
+      const role = document.getElementById("regRole").value;
+
+      if (!name || !email || !password) {
+        showToast("Please fill in all required fields.", "error");
+        return;
+      }
+
+      if (password.length < 6) {
+        showToast("Password must be at least 6 characters.", "error");
+        return;
+      }
+
+      if (userByEmail(email)) {
+        showToast("An account with this email already exists.", "error");
+        return;
+      }
+
+      const newUser = {
+        id: crypto.randomUUID(),
+        name,
+        email,
+        role,
+        passwordHash: await hashPassword(password)
+      };
+
+      users.push(newUser);
+      saveUsers();
+      setSession(newUser);
+      showToast("Account created successfully.", "success");
+      document.getElementById("registerForm").reset();
+      switchAuthTab("login");
+    }
+
+    function handleJoinCourse(e) {
+      e.preventDefault();
+      const code = document.getElementById("joinCourseCode").value.trim().toUpperCase();
+      if (!code) {
+        showToast("Enter a course code.", "error");
+        return;
+      }
+
+      const course = courses.find(c => c.code.toUpperCase() === code);
+      if (!course) {
+        showToast("Course code not found.", "error");
+        return;
+      }
+
+      const email = normalizeEmail(sessionUser.email);
+      course.enrolledStudents = course.enrolledStudents || [];
+      if (course.enrolledStudents.includes(email)) {
+        showToast("You are already enrolled in this course.", "info");
+        return;
+      }
+
+      course.enrolledStudents.push(email);
+      saveCourses();
+      renderApp();
+      showToast(`Joined course ${course.code}.`, "success");
+      e.target.reset();
+    }
+
+    function handleCreateCourse(e) {
+      e.preventDefault();
+
+      const code = document.getElementById("courseCode").value.trim().toUpperCase();
+      const name = document.getElementById("courseName").value.trim();
+      const description = document.getElementById("courseDesc").value.trim();
+
+      if (!code || !name) {
+        showToast("Course code and course name are required.", "error");
+        return;
+      }
+
+      if (courses.some(c => c.code.toUpperCase() === code)) {
+        showToast("Course code already exists.", "error");
+        return;
+      }
+
+      const newCourse = {
+        id: crypto.randomUUID(),
+        code,
+        name,
+        description,
+        instructorEmail: sessionUser.email,
+        instructorName: sessionUser.name,
+        enrolledStudents: [],
+        attendanceRecords: {}
+      };
+
+      courses.unshift(newCourse);
+      saveCourses();
+      renderApp();
+      showToast("Course created successfully.", "success");
+      e.target.reset();
+    }
+
+    function markAttendance(courseId) {
+      const course = courseById(courseId);
+      if (!course) {
+        showToast("Course not found.", "error");
+        return;
+      }
+
+      const email = normalizeEmail(sessionUser.email);
+      if (!(course.enrolledStudents || []).includes(email)) {
+        showToast("You must join the course before marking attendance.", "error");
+        return;
+      }
+
+      course.attendanceRecords = course.attendanceRecords || {};
+      course.attendanceRecords[todayKey] = course.attendanceRecords[todayKey] || {};
+
+      if (course.attendanceRecords[todayKey][email] === "Present") {
+        showToast("Attendance already marked for today.", "info");
+        return;
+      }
+
+      course.attendanceRecords[todayKey][email] = "Present";
+      saveCourses();
+      renderApp();
+      showToast("Attendance marked successfully.", "success");
+    }
+
+    function openRosterModal(courseId) {
+      const course = courseById(courseId);
+      if (!course) return;
+
+      activeRosterCourseId = courseId;
+      rosterTitle.textContent = `Manage Roster: ${course.name}`;
+      rosterCourseInfo.innerHTML = `
+        <strong>Course:</strong> ${escapeHTML(course.code)} - ${escapeHTML(course.name)}<br />
+        <strong>Description:</strong> ${escapeHTML(course.description || "No description provided.")}<br />
+        <strong>Today:</strong> ${todayKey}
+      `;
+
+      renderRosterList(course);
+      rosterModal.classList.add("show");
+    }
+
+    function closeRosterModal() {
+      rosterModal.classList.remove("show");
+      activeRosterCourseId = null;
+      studentEmailInput.value = "";
+    }
+
+    function renderRosterList(course) {
+      const enrolled = course.enrolledStudents || [];
+      if (!enrolled.length) {
+        rosterList.innerHTML = `<div class="empty">No students enrolled in this course yet.</div>`;
+        return;
+      }
+
+      rosterList.innerHTML = enrolled.map(email => {
+        const student = userByEmail(email);
+        const displayName = student ? student.name : "Unknown Student";
+        return `
+          <div class="course-card">
+            <div class="course-top">
+              <div>
+                <h4 class="course-title">${escapeHTML(displayName)}</h4>
+                <span class="course-code">${escapeHTML(email)}</span>
+              </div>
+              <button class="danger-btn" onclick="removeStudentFromCourse('${course.id}', '${email}')">Remove</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function removeStudentFromCourse(courseId, email) {
+      const course = courseById(courseId);
+      if (!course) return;
+
+      course.enrolledStudents = (course.enrolledStudents || []).filter(e => normalizeEmail(e) !== normalizeEmail(email));
+      saveCourses();
+      openRosterModal(courseId);
+      renderApp();
+      showToast("Student removed from course.", "info");
+    }
+
+    function deleteCourse(courseId) {
+      if (!confirm("Delete this course?")) return;
+      courses = courses.filter(c => c.id !== courseId);
+      saveCourses();
+      renderApp();
+      showToast("Course deleted.", "info");
+    }
+
+    function viewCourseRecords(courseId) {
+      const course = courseById(courseId);
+      if (!course) return;
+
+      const dates = Object.keys(course.attendanceRecords || {});
+      if (!dates.length) {
+        showToast("No attendance records available yet.", "info");
+        return;
+      }
+
+      const summary = dates.map(date => {
+        const records = course.attendanceRecords[date];
+        const entries = Object.keys(records).map(email => `${email}: ${records[email]}`).join(", ");
+        return `${date} -> ${entries}`;
+      }).join(" | ");
+
+      alert(`Attendance Records for ${course.code} - ${course.name}\n\n${summary}`);
+    }
+
+    function escapeHTML(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    loginForm.addEventListener("submit", handleLogin);
+    registerForm.addEventListener("submit", handleRegister);
+    joinCourseForm.addEventListener("submit", handleJoinCourse);
+    createCourseForm.addEventListener("submit", handleCreateCourse);
+
+    addStudentForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const course = courseById(activeRosterCourseId);
+      if (!course) {
+        showToast("Course not found.", "error");
+        return;
+      }
+
+      const email = normalizeEmail(studentEmailInput.value);
+      if (!email) {
+        showToast("Enter a valid student email.", "error");
+        return;
+      }
+
+      const student = userByEmail(email);
+      if (!student || student.role !== "student") {
+        showToast("Student account not found.", "error");
+        return;
+      }
+
+      course.enrolledStudents = course.enrolledStudents || [];
+      if (course.enrolledStudents.includes(email)) {
+        showToast("Student is already enrolled.", "info");
+        return;
+      }
+
+      course.enrolledStudents.push(email);
+      saveCourses();
+      renderApp();
+      openRosterModal(activeRosterCourseId);
+      studentEmailInput.value = "";
+      showToast("Student added to roster.", "success");
+    });
+
+    window.switchAuthTab = switchAuthTab;
+    window.logout = logout;
+    window.markAttendance = markAttendance;
+    window.openRosterModal = openRosterModal;
+    window.closeRosterModal = closeRosterModal;
+    window.removeStudentFromCourse = removeStudentFromCourse;
+    window.deleteCourse = deleteCourse;
+    window.viewCourseRecords = viewCourseRecords;
+    window.renderInstructorSide = renderInstructorSide;
+
+    // Initial seed passwords for demo accounts only if they are blank
+    (async function seedDemoAccounts() {
+      const demoStudent = users.find(u => u.email === "student@uni.com");
+      const demoInstructor = users.find(u => u.email === "prof@uni.com");
+      if (demoStudent && !demoStudent.passwordHash) demoStudent.passwordHash = await hashPassword("Pass@123");
+      if (demoInstructor && !demoInstructor.passwordHash) demoInstructor.passwordHash = await hashPassword("Pass@123");
+      saveUsers();
+      renderApp();
+    })();
+
+    // close modal when clicking outside
+    rosterModal.addEventListener("click", (e) => {
+      if (e.target === rosterModal) closeRosterModal();
+    });
+  </script>
+</body>
+</html>
