@@ -370,6 +370,96 @@ Attach screenshot showing mobile-friendly interface.
 
 ---
 
+## Demo Instructor Accounts
+
+### Instructor 1
+
+```text id="tfy6lr"
+Name: Dr. John Smith
+Email: john@uni.com
+Password: Pass@123
+Role: Instructor
+```
+
+### Instructor 2
+
+```text id="f1gj48"
+Name: Prof. Sarah Williams
+Email: sarah@uni.com
+Password: Pass@123
+Role: Instructor
+```
+
+---
+
+# Demo Student Accounts
+
+### Student 1
+
+```text id="2vqyn8"
+Name: Rahul Kumar
+Email: rahul@uni.com
+Password: Pass@123
+Role: Student
+```
+
+### Student 2
+
+```text id="9o5h7h"
+Name: Priya Sharma
+Email: priya@uni.com
+Password: Pass@123
+Role: Student
+```
+
+### Student 3
+
+```text id="4z7qk1"
+Name: Arjun Patel
+Email: arjun@uni.com
+Password: Pass@123
+Role: Student
+```
+
+### Student 4
+
+```text id="z7q7oh"
+Name: Sneha Reddy
+Email: sneha@uni.com
+Password: Pass@123
+Role: Student
+```
+
+### Student 5
+
+```text id="g0y4q8"
+Name: Karthik Raj
+Email: karthik@uni.com
+Password: Pass@123
+Role: Student
+```
+
+---
+
+# Sample Course Assignments
+
+| Course Code | Course Name                 | Instructor           |
+| ----------- | --------------------------- | -------------------- |
+| CSE101      | Data Structures             | Dr. John Smith       |
+| CSE102      | Computer Networks           | Prof. Sarah Williams |
+| CSE103      | Database Management Systems | Dr. John Smith       |
+
+---
+
+# Suggested Demo Flow
+
+1. Login as instructor
+2. Create courses
+3. Login as students
+4. Join courses using course codes
+5. Mark attendance
+6. Show attendance records in instructor dashboard 😄
+
 # Conclusion
 
 The University Attendance App successfully demonstrates a complete attendance management system for educational institutions. The application supports tutor and student authentication, course management, attendance tracking, roster handling, and responsive user interaction.
